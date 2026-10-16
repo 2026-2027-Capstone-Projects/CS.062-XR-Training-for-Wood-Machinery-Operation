@@ -6,8 +6,13 @@ public class InputMaster : MonoBehaviour
 {
 
     InputSystem_Actions inputSystem;
-
+    
+    [SerializeField]
     bool pressed = false;
+
+    [SerializeField]
+    GameObject selectedObject = null;
+    public GameObject SelectedObject { get { return selectedObject; } }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -43,6 +48,11 @@ public class InputMaster : MonoBehaviour
             if (Physics.Raycast(ray, out hit, Mathf.Infinity))
             {
                 Debug.Log($"Hit object: {hit.collider.gameObject.name} at position {hit.point}");
+                selectedObject = hit.collider.gameObject;
+            }
+            else
+            {
+                selectedObject = null;
             }
         }
     }
