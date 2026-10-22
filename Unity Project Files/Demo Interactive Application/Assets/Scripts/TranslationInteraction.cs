@@ -32,6 +32,8 @@ public class TranslationInteraction : MonoBehaviour
 
     public void UpdateX(TMP_InputField text)
     {
+        if (text.text == "")
+                return;
         if (inputMaster.SelectedObject != null)
         {
             float x = float.Parse(text.text);
@@ -43,6 +45,8 @@ public class TranslationInteraction : MonoBehaviour
     }
     public void UpdateY(TMP_InputField text)
     {
+        if (text.text == "")
+            return;
         if (inputMaster.SelectedObject != null)
         {
             float y = float.Parse(text.text);
@@ -55,6 +59,8 @@ public class TranslationInteraction : MonoBehaviour
 
     public void UpdateZ(TMP_InputField text)
     {
+        if (text.text == "")
+            return;
         if (inputMaster.SelectedObject != null)
         {
             float z = float.Parse(text.text);

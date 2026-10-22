@@ -4,9 +4,6 @@ using UnityEngine.InputSystem;
 
 public class InputMaster : MonoBehaviour
 {
-    [SerializeField]
-    LayerMask raycastMask;
-
     InputSystem_Actions inputSystem;
     
     [SerializeField]
@@ -48,16 +45,11 @@ public class InputMaster : MonoBehaviour
             RaycastHit hit;
 
             // 5. Perform the Physics Raycast
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, raycastMask))
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
             {
                 Debug.Log($"Hit object: {hit.collider.gameObject.name} at position {hit.point}");
                 selectedObject = hit.collider.gameObject;
             }
         }
-    }
-
-    public void ClearSelectedObject()
-    {
-        selectedObject = null;
     }
 }
