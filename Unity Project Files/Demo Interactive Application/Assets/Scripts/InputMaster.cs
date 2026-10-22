@@ -1,12 +1,13 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 
 public class InputMaster : MonoBehaviour
 {
 
     InputSystem_Actions inputSystem;
-    
+
     [SerializeField]
     bool pressed = false;
 
@@ -27,10 +28,10 @@ public class InputMaster : MonoBehaviour
         inputSystem.Player.Attack.performed += context =>
         {
             pressed = true;
-            
+
         };
 
-        inputSystem.Player.Attack.canceled += i => { pressed = false; Debug.Log("Button Canceled");};
+        inputSystem.Player.Attack.canceled += i => { pressed = false; Debug.Log("Button Canceled"); };
     }
 
     // Update is called once per frame
@@ -38,6 +39,10 @@ public class InputMaster : MonoBehaviour
     {
         if (pressed)
         {
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
             Vector2 mouse = Mouse.current.position.ReadValue();
             Debug.Log("Button Pressed");
             Ray ray = Camera.main.ScreenPointToRay(mouse);
