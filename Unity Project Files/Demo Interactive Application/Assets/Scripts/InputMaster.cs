@@ -4,7 +4,6 @@ using UnityEngine.InputSystem;
 
 public class InputMaster : MonoBehaviour
 {
-
     InputSystem_Actions inputSystem;
     
     [SerializeField]
@@ -12,6 +11,7 @@ public class InputMaster : MonoBehaviour
 
     [SerializeField]
     GameObject selectedObject = null;
+
     public GameObject SelectedObject { get { return selectedObject; } }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -49,10 +49,6 @@ public class InputMaster : MonoBehaviour
             {
                 Debug.Log($"Hit object: {hit.collider.gameObject.name} at position {hit.point}");
                 selectedObject = hit.collider.gameObject;
-            }
-            else
-            {
-                selectedObject = null;
             }
         }
     }
