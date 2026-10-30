@@ -54,6 +54,12 @@ public class InputMaster : MonoBehaviour
             {
                 Debug.Log($"Hit object: {hit.collider.gameObject.name} at position {hit.point}");
                 selectedObject = hit.collider.gameObject;
+
+                if (selectedObject.GetComponent<Interactable>())
+                {
+                    selectedObject.GetComponent<Interactable>().OnInteract();
+                }
+
             }
         }
     }
