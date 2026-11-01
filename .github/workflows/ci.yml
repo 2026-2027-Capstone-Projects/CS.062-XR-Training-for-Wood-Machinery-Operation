@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  ci:
+    name: Build Unity Project
+    runs-on: ubuntu-latest
+
+    steps:
+      # Get repository files
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Install GameCI CLI and build
+      - name: Build Unity project
+        uses: game-ci/cli@v0.1.48
+        with:
+          args: build . --target-platform StandaloneLinux64
