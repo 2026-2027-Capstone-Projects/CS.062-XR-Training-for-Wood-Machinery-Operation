@@ -1,5 +1,5 @@
 
-name: CI
+name: Interaction Unit Test
 
 on:
   workflow_dispatch:
