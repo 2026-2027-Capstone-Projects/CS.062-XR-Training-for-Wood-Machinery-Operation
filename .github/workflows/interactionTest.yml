@@ -1,5 +1,5 @@
 
-name: interactionTest
+name: CI
 
 on:
   workflow_dispatch:
@@ -11,10 +11,11 @@ on:
 permissions:
   contents: read
   checks: write
-  
+
 jobs:
-  ci:
-    name: Build Unity Project
+
+  tests:
+    name: Unity PlayMode Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -31,8 +32,8 @@ jobs:
         with:
           projectPath: "Unity Project Files/Demo Interactive Application"
           testMode: playmode
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
           artifactsPath: artifacts/playmode
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload PlayMode test results
         if: always()
@@ -41,6 +42,15 @@ jobs:
           name: unity-playmode-test-results
           path: ${{ steps.tests.outputs.artifactsPath }}
           if-no-files-found: warn
+
+  build:
+    name: Build Unity Project
+    runs-on: ubuntu-latest
+    needs: tests
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Build Unity project
         uses: game-ci/unity-builder@v4
