@@ -8,6 +8,10 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: read
+  checks: write
+  
 jobs:
   ci:
     name: Build Unity Project
@@ -27,6 +31,7 @@ jobs:
         with:
           projectPath: "Unity Project Files/Demo Interactive Application"
           testMode: playmode
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
           artifactsPath: artifacts/playmode
 
       - name: Upload PlayMode test results
