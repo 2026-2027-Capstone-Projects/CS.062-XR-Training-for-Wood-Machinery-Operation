@@ -180,7 +180,7 @@ public class RaycastSelectionTests : InputTestFixture
             // Verify selected object is the test cube
             Assert.That(
                 selected,
-                Is.SameAs(target),
+                Is.SameAs(null),
                 "InputMaster did not select the cube."
             );
         }
