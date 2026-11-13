@@ -289,6 +289,9 @@ GameObject:
   - component: {fileID: 1663316150}
   - component: {fileID: 1663316149}
   - component: {fileID: 1663316153}
+  - component: {fileID: 1663316155}
+  - component: {fileID: 1663316154}
+  - component: {fileID: 1663316156}
   m_Layer: 0
   m_Name: XR Origin
   m_TagString: Untagged
@@ -377,6 +380,55 @@ MonoBehaviour:
   raycastManager: {fileID: 1663316149}
   allowMultiplePlacements: 1
   objectToPlace: {fileID: 5776499355424577563, guid: 9f501541b81f395489157b7b8a0a4e7a, type: 3}
+--- !u!114 &1663316154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1663316148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dab0e3e2211c18a478ee01283591da55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::QRImageTracker
+  trackedImageManager: {fileID: 1663316155}
+--- !u!114 &1663316155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1663316148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dea56a9eaadd1c439095de4f9a371cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.XR.ARFoundation::UnityEngine.XR.ARFoundation.ARTrackedImageManager
+  <trackablesChanged>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SerializedLibrary: {fileID: 11400000, guid: 5b2610dc247bfc14c94956869b269fd5, type: 2}
+  m_MaxNumberOfMovingImages: 1
+  m_TrackedImagePrefab: {fileID: 0}
+--- !u!114 &1663316156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1663316148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a75a206fd2f06bd4684bbf1b7b692f84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ARButtonController
+  trackedImageManager: {fileID: 1663316155}
+  raycastManager: {fileID: 1663316149}
+  buttonPrefab: {fileID: 4606582986147308546, guid: 5a2f57323280b924e900c05bbb57e01a, type: 3}
+  buttonLocalOffset: {x: 0, y: 0, z: 0}
+  explosionPrefab: {fileID: 9081122808542783909, guid: 74059ef059a919544b4a98c2a674fe36, type: 3}
+  arCamera: {fileID: 1876545985}
 --- !u!1 &1876545979
 GameObject:
   m_ObjectHideFlags: 0
