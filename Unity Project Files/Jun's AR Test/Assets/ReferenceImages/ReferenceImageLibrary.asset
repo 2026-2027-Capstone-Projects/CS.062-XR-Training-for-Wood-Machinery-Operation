@@ -27,3 +27,13 @@ MonoBehaviour:
     m_SpecifySize: 1
     m_Name: qr_anchor_001
     m_Texture: {fileID: 0}
+  - m_SerializedGuid:
+      m_GuidLow: 5677832209600314014
+      m_GuidHigh: 11455391166780278684
+    m_SerializedTextureGuid:
+      m_GuidLow: 15191943390663061563
+      m_GuidHigh: 1550232581889755947
+    m_Size: {x: 0.15, y: 0.12634943}
+    m_SpecifySize: 1
+    m_Name: benny
+    m_Texture: {fileID: 0}

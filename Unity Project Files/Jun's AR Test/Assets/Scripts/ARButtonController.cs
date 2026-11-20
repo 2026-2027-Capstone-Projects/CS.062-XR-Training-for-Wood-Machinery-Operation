@@ -1,5 +1,5 @@
 
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.EnhancedTouch;
@@ -11,10 +11,25 @@ public class ARButtonController : MonoBehaviour
 {
     [Header("AR Managers")]
     [SerializeField] private ARTrackedImageManager trackedImageManager;
-    [SerializeField] private ARRaycastManager raycastManager;
+
+    [Header("Benny")]
+    [SerializeField] private GameObject bennyPrefab;
+    [SerializeField] private string bennyImg;
+
+    [SerializeField] private Canvas instructionCanvas;
+    [SerializeField] private TMP_Text instructionText;
+    [SerializeField]
+    private string[] instructions =
+    {
+        "Step 1: First instruction goes here.",
+        "Step 2: Second instruction goes here.",
+        "Step 3: Third instruction goes here."
+    };
+    private int currInstructionIndex = 0;
 
     [Header("Button")]
     [SerializeField] private GameObject buttonPrefab;
+    [SerializeField] private string buttonImg;
     [SerializeField] private Vector3 buttonLocalOffset = new Vector3(0, 0, 0.05f);
 
     [Header("Animation")]
@@ -23,6 +38,7 @@ public class ARButtonController : MonoBehaviour
     [Header("Camera")]
     [SerializeField] private Camera arCamera;
 
+    private GameObject bennyInstance;
     private GameObject buttonInstance;
 
     private void OnEnable()
@@ -37,15 +53,26 @@ public class ARButtonController : MonoBehaviour
 
     private void Update()
     {
-        if (!trackedImageManager || !raycastManager ||
-            !buttonPrefab || !arCamera)
+        if (trackedImageManager)
         {
-            return;
+            if (!bennyInstance && bennyPrefab)
+            {
+                bennyInstance = spawnPrefabOnImage(bennyPrefab, bennyImg, Vector3.zero);
+                if (bennyInstance)
+                {
+                    enableBennyCanvas();
+                }
+            }
+
+            if (!buttonInstance && buttonPrefab)
+            {
+                buttonInstance = spawnPrefabOnImage(buttonPrefab, buttonImg, buttonLocalOffset);
+            }
         }
 
-        if (!buttonInstance)
+        if (!arCamera)
         {
-            spawnButton();
+            return;
         }
 
         if (Touch.activeTouches.Count == 0)
@@ -63,44 +90,99 @@ public class ARButtonController : MonoBehaviour
         checkButtonTap(touch.screenPosition);
     }
 
-    private void spawnButton()
+    private GameObject spawnPrefabOnImage(GameObject prefab, string imageName, Vector3 localOffset)
     {
+        if (string.IsNullOrEmpty(imageName))
+        {
+            return null;
+        }
+
         foreach (ARTrackedImage image in trackedImageManager.trackables)
         {
-            if (image.trackingState != TrackingState.Tracking)
+            if (image.trackingState != TrackingState.Tracking ||
+                image.referenceImage.name != imageName)
             {
                 continue;
             }
 
-            buttonInstance = Instantiate(buttonPrefab, image.transform);
+            GameObject instance = Instantiate(prefab, image.transform);
 
-            buttonInstance.transform.localPosition = buttonLocalOffset;
-            buttonInstance.transform.localRotation = Quaternion.identity;
+            instance.transform.localPosition = localOffset;
+            instance.transform.localRotation = Quaternion.identity;
 
-            Debug.Log("AR Button spawned!");
-            return;
+            Debug.Log($"{prefab.name} spawned on tracked image {imageName}.");
+            return instance;
         }
+
+        return null;
     }
 
     private void checkButtonTap(Vector2 touchPosition)
     {
-        // perform a physics raycast against the button.
         Ray ray = arCamera.ScreenPointToRay(touchPosition);
+        RaycastHit[] hits = Physics.RaycastAll(ray);
+        RaycastHit targetHit = default;
+        bool targetHitFound = false;
+        bool hitBenny = false;
 
-        if (!Physics.Raycast(ray, out RaycastHit hit))
+        foreach (RaycastHit hit in hits)
+        {
+            bool hitButton = buttonInstance &&
+                (hit.transform == buttonInstance.transform ||
+                 hit.transform.IsChildOf(buttonInstance.transform));
+            bool hitBennyObject = bennyInstance &&
+                (hit.transform == bennyInstance.transform ||
+                 hit.transform.IsChildOf(bennyInstance.transform));
+
+            if ((!hitButton && !hitBennyObject) ||
+                (targetHitFound && hit.distance >= targetHit.distance))
+            {
+                continue;
+            }
+
+            targetHit = hit;
+            targetHitFound = true;
+            hitBenny = hitBennyObject;
+        }
+
+        if (!targetHitFound)
         {
             return;
         }
 
-        if (hit.transform != buttonInstance.transform &&
-            !hit.transform.IsChildOf(buttonInstance.transform))
+        if (!hitBenny)
+        {
+            Debug.Log("Button pressed!");
+        }
+        else
+        {
+            Debug.Log("Benny pressed!");
+        }
+
+        playExplosion(targetHit.point);
+        if (hitBenny)
+        {
+            flipBenny();
+        }
+    }
+
+    private void enableBennyCanvas()
+    {
+        if (instructionCanvas)
+        {
+            instructionCanvas.enabled = true;
+        }
+    }
+
+    private void flipBenny()
+    {
+        if (!bennyInstance || !instructionText || instructions == null || instructions.Length == 0)
         {
             return;
         }
 
-        Debug.Log("Button pressed!");
-
-        playExplosion(hit.point);
+        currInstructionIndex = (currInstructionIndex + 1) % instructions.Length;
+        instructionText.text = instructions[currInstructionIndex];
     }
 
     private void playExplosion(Vector3 position)
