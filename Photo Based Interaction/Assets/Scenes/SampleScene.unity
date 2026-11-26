@@ -336,11 +336,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractionModule
   mode: 1
-  pressed: 0
   raycastMask:
     serializedVersion: 2
     m_Bits: 512
+  interactionCamera: {fileID: 0}
   selectedObject: {fileID: 0}
+  tapThreshold: 20
 --- !u!114 &241991653
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -358,9 +359,10 @@ MonoBehaviour:
   UpNav: {fileID: 1725221570}
   DownNav: {fileID: 862686682}
   currentPhotoObject: {fileID: 11400000, guid: ef344d1d7d707c44b93f095a018952cb, type: 2}
-  interactableObjects: []
   image: {fileID: 32684928}
+  cameraController: {fileID: 330585548}
   prefabInteractable: {fileID: 6183332949897980509, guid: ac0928143b027a545a17dfe7c4269d1a, type: 3}
+  interactableObjects: []
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -373,6 +375,7 @@ GameObject:
   - component: {fileID: 330585545}
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
+  - component: {fileID: 330585548}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -498,6 +501,21 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &330585548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 147cc9b31b70f854cb81394f65ccd657, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PhotoCameraController
+  trainingImage: {fileID: 32684928}
+  maxZoom: 10
+  zoomSensitivity: 0.25
 --- !u!1 &331974248
 GameObject:
   m_ObjectHideFlags: 0
