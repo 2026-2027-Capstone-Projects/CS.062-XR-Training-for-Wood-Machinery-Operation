@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Rear
   m_EditorClassIdentifier: Assembly-CSharp::PhotoObject
   Name: Rear
-  photo: {fileID: -8881836366015340059, guid: 25ec56d3683ec9f41b63c7372d269059, type: 3}
+  photo: {fileID: -7888270370254707722, guid: 5170fd7fcebb81047b3ec30b91168c2f, type: 3}
   left: {fileID: 11400000, guid: efbe4d77506444b44949df1e961f4bf8, type: 2}
   right: {fileID: 0}
   up: {fileID: 11400000, guid: f938eb55f4a9360489ef3d4b1a3124cf, type: 2}
   down: {fileID: 0}
-  interactedState: {fileID: -7888270370254707722, guid: 5170fd7fcebb81047b3ec30b91168c2f, type: 3}
+  interactedState: {fileID: -8881836366015340059, guid: 25ec56d3683ec9f41b63c7372d269059, type: 3}
   machineComponents:
   - {fileID: 11400000, guid: 6de1b7f1b6f0d1949a82319d66844896, type: 2}

@@ -1,6 +1,12 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.EnhancedTouch;
+using UnityEngine.UI;
+
+using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
+using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
 public enum TrainingMode
 {
@@ -9,76 +15,188 @@ public enum TrainingMode
 
 public class InteractionModule : MonoBehaviour
 {
-    [SerializeField]
-    TrainingMode mode = TrainingMode.Exploration;
+    [SerializeField] TrainingMode mode = TrainingMode.Exploration;
+    [SerializeField] LayerMask raycastMask;
+    [SerializeField] Camera interactionCamera;
+    [SerializeField] GameObject selectedObject;
 
-    InputSystem_Actions inputSystem;
+    [SerializeField] float tapThreshold = 20f;
 
-    [SerializeField]
-    bool pressed = false;
+    private Vector2 touchStart;
+    private bool validTap;
+    private bool suppressTouch;
+    private int trackedTouchId;
 
-    [SerializeField]
-    LayerMask raycastMask;
+    private readonly List<RaycastResult> uiHits = new();
 
-    [SerializeField]
-    GameObject selectedObject;
-
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
-        if (inputSystem == null)
-        {
-            inputSystem = new InputSystem_Actions();
-        }
-        inputSystem.Enable();
-
-
-        inputSystem.Player.Attack.performed += context =>
-        {
-            pressed = true;
-
-        };
-
-        inputSystem.Player.Attack.canceled += i => { pressed = false; };
+        if (interactionCamera == null)
+            interactionCamera = Camera.main;
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
+    void OnEnable()
     {
-        if (pressed)
+        EnhancedTouchSupport.Enable();
+    }
+
+    void OnDisable()
+    {
+        EnhancedTouchSupport.Disable();
+
+        validTap = false;
+        suppressTouch = false;
+    }
+
+    void LateUpdate()
+    {
+        if (Touch.activeTouches.Count > 0)
         {
-            if (EventSystem.current.IsPointerOverGameObject())
-            {
-                return;
-            }
+            HandleTouch();
+            return;
+        }
 
-            Vector2 mouse = Mouse.current.position.ReadValue();
-            
-            Ray ray = Camera.main.ScreenPointToRay(mouse);
-            RaycastHit hit;
+        suppressTouch = false;
+        validTap = false;
 
-            // 5. Perform the Physics Raycast
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, raycastMask))
-            {
-                //Debug.Log($"Hit object: {hit.collider.gameObject.name} at position {hit.point}");
-                if (selectedObject == hit.collider.gameObject && mode == TrainingMode.Guided)
-                {
-                    selectedObject = null;
-                }
-                else
-                {
-                    selectedObject = hit.collider.gameObject;
-                    InteractableObject interactable = selectedObject.GetComponent<InteractableObject>();
-                    if (interactable != null)
-                    {
-                        interactable.OnInteract(mode);
-                    }
-                }
-                pressed = false; //Reset pressed so only 1 raycast is registered per click event
+        HandleMouse();
+    }
 
-            }
+    private void HandleMouse()
+    {
+        Mouse mouse = Mouse.current;
+
+        if (mouse == null)
+            return;
+
+        // Prevent interaction while panning.
+        if (mouse.rightButton.isPressed)
+            return;
+
+        if (mouse.leftButton.wasPressedThisFrame)
+        {
+            TryInteract(mouse.position.ReadValue());
         }
     }
 
+    private void HandleTouch()
+    {
+        var touches = Touch.activeTouches;
+
+        // Cancel interaction during multi-touch gestures.
+        if (touches.Count > 1)
+        {
+            validTap = false;
+            suppressTouch = true;
+            return;
+        }
+
+        // Wait until all fingers have been released.
+        if (suppressTouch)
+            return;
+
+        Touch touch = touches[0];
+
+        switch (touch.phase)
+        {
+            case TouchPhase.Began:
+
+                touchStart = touch.screenPosition;
+                trackedTouchId = touch.touchId;
+                validTap = !IsPointerOverUI(touchStart);
+                break;
+
+            case TouchPhase.Moved:
+
+                if (Vector2.Distance(
+                    touchStart,
+                    touch.screenPosition) > tapThreshold)
+                {
+                    validTap = false;
+                }
+
+                break;
+
+            case TouchPhase.Ended:
+
+                if (validTap &&
+                    touch.touchId == trackedTouchId &&
+                    Vector2.Distance(
+                        touchStart,
+                        touch.screenPosition) <= tapThreshold)
+                {
+                    TryInteract(touch.screenPosition);
+                }
+
+                validTap = false;
+                break;
+
+            case TouchPhase.Canceled:
+
+                validTap = false;
+                break;
+        }
+    }
+
+    private void TryInteract(Vector2 screenPosition)
+    {
+        if (interactionCamera == null ||
+            IsPointerOverUI(screenPosition))
+        {
+            return;
+        }
+
+        Ray ray = interactionCamera.ScreenPointToRay(
+            screenPosition
+        );
+
+        if (Physics.Raycast(
+            ray,
+            out RaycastHit hit,
+            Mathf.Infinity,
+            raycastMask))
+        {
+            if (selectedObject == hit.collider.gameObject &&
+                mode == TrainingMode.Guided)
+            {
+                selectedObject = null;
+            }
+            else
+            {
+                selectedObject = hit.collider.gameObject;
+
+                InteractableObject interactable =
+                    selectedObject.GetComponent<InteractableObject>();
+
+                if (interactable != null)
+                {
+                    interactable.OnInteract(mode);
+                }
+            }
+        }
+    }
+
+    private bool IsPointerOverUI(Vector2 screenPosition)
+    {
+        if (EventSystem.current == null)
+            return false;
+
+        PointerEventData pointer = new PointerEventData(
+            EventSystem.current
+        );
+
+        pointer.position = screenPosition;
+
+        uiHits.Clear();
+
+        EventSystem.current.RaycastAll(pointer, uiHits);
+
+        foreach (RaycastResult hit in uiHits)
+        {
+            if (hit.module is GraphicRaycaster)
+                return true;
+        }
+
+        return false;
+    }
 }

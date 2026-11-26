@@ -1,126 +1,108 @@
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 
 public class PhotoManager : MonoBehaviour
 {
+
     [SerializeField] GameObject LeftNav;
     [SerializeField] GameObject RightNav;
     [SerializeField] GameObject UpNav;
     [SerializeField] GameObject DownNav;
 
-    [SerializeField] PhotoObject currentPhotoObject;
+    public PhotoObject currentPhotoObject;
+    public SpriteRenderer image;
 
-    [SerializeField] List<GameObject> interactableObjects = new List<GameObject>();
-
-    [SerializeField] SpriteRenderer image;
+    [SerializeField]
+    PhotoCameraController cameraController;
 
     [SerializeField] GameObject prefabInteractable;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [SerializeField]
+    List<GameObject> interactableObjects = new List<GameObject>();
+
     void Start()
     {
-        image.sprite = currentPhotoObject.photo;
-        Debug.Log(currentPhotoObject.name);
-        PopulateInteractables();
+        LoadPhoto(currentPhotoObject);
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
+    public void LoadPhoto(PhotoObject photo)
     {
-        if(currentPhotoObject.left != null)
-        {
-            LeftNav.SetActive(true);
-        }
-        else
-        {
-            LeftNav.SetActive(false);
-        }
+        if (photo == null)
+            return;
 
-        if (currentPhotoObject.right != null)
-        {
-            RightNav.SetActive(true);
-        }
-        else
-        {
-            RightNav.SetActive(false);
-        }
+        ClearCurrentInteractables();
 
-        if (currentPhotoObject.up != null)
-        {
-            UpNav.SetActive(true);
-        }
-        else
-        {
-            UpNav.SetActive(false);
-        }
+        currentPhotoObject = photo;
+        image.sprite = currentPhotoObject.photo;
 
-        if (currentPhotoObject.down != null)
-        {
-            DownNav.SetActive(true);
-        }
-        else
-        {
-            DownNav.SetActive(false);
-        }
+        PopulateInteractables();
+        UpdateNavigation();
+
+        cameraController.ResetView();
 
     }
 
+    private void UpdateNavigation()
+    {
+        LeftNav.SetActive(currentPhotoObject.left != null);
+        RightNav.SetActive(currentPhotoObject.right != null);
+        UpNav.SetActive(currentPhotoObject.up != null);
+        DownNav.SetActive(currentPhotoObject.down != null);
+    }
 
     public void ClearCurrentInteractables()
     {
-        for (int ii = 0; ii < interactableObjects.Count; ii++)
+        foreach (GameObject interactable in interactableObjects)
         {
-            Destroy(interactableObjects[ii]);
+            interactable.SetActive(false);
+            Destroy(interactable);
         }
+
         interactableObjects.Clear();
     }
 
-    //Populates scene with the relevant interactable objects. should probably use a interactable pool but that would limit the effectiveness of recursion
     public void PopulateInteractables()
     {
-       for (int ii = 0; ii < currentPhotoObject.machineComponents.Length; ii++)
-       {
-            GameObject newObject = Instantiate(prefabInteractable, currentPhotoObject.machineComponents[ii].componentPosition,
-                Quaternion.Euler(currentPhotoObject.machineComponents[ii].componentRotation));
-            newObject.transform.localScale = currentPhotoObject.machineComponents[ii].componentScale;
-            newObject.GetComponent<InteractableObject>().machineComponent = currentPhotoObject.machineComponents[ii];
-            newObject.name = currentPhotoObject.machineComponents[ii].name;
+        if (currentPhotoObject.machineComponents == null)
+            return;
+
+        foreach (var component in currentPhotoObject.machineComponents)
+        {
+            GameObject newObject = Instantiate(
+                prefabInteractable,
+                component.componentPosition,
+                Quaternion.Euler(component.componentRotation)
+            );
+
+            newObject.transform.localScale =
+                component.componentScale;
+
+            newObject.GetComponent<InteractableObject>()
+                .machineComponent = component;
+
+            newObject.name = component.name;
+
             interactableObjects.Add(newObject);
-       }
+        }
     }
 
     public void LeftNavCallback()
     {
-        currentPhotoObject = currentPhotoObject.left;
-        Debug.Log(currentPhotoObject.name);
-        image.sprite = currentPhotoObject.photo;
-        ClearCurrentInteractables();
-        PopulateInteractables();
-    }
-    public void RightNavCallback()
-    {
-        currentPhotoObject = currentPhotoObject.right;
-        Debug.Log(currentPhotoObject.name);
-        image.sprite = currentPhotoObject.photo;
-        ClearCurrentInteractables();
-        PopulateInteractables();
-    }
-    public void UpNavCallback()
-    {
-        currentPhotoObject = currentPhotoObject.up;
-        Debug.Log(currentPhotoObject.name);
-        image.sprite = currentPhotoObject.photo;
-        ClearCurrentInteractables();
-        PopulateInteractables();
-    }
-    public void DownNavCallback()
-    {
-        currentPhotoObject = currentPhotoObject.down;
-        Debug.Log(currentPhotoObject.name);
-        image.sprite = currentPhotoObject.photo;
-        ClearCurrentInteractables();
-        PopulateInteractables();
+        LoadPhoto(currentPhotoObject.left);
     }
 
+    public void RightNavCallback()
+    {
+        LoadPhoto(currentPhotoObject.right);
+    }
+
+    public void UpNavCallback()
+    {
+        LoadPhoto(currentPhotoObject.up);
+    }
+
+    public void DownNavCallback()
+    {
+        LoadPhoto(currentPhotoObject.down);
+    }
 }
