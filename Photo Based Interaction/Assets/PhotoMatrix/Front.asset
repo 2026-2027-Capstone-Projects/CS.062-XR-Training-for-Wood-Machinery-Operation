@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84803622bf47d7e4c8b937aaa9c45230, type: 3}
+  m_Name: Front
+  m_EditorClassIdentifier: Assembly-CSharp::PhotoObject
+  Name: Front
+  photo: {fileID: -6384986514367302370, guid: 5774b4fc5cebd8540993ab1e5b69eeee, type: 3}
+  left: {fileID: 11400000, guid: 06c3cf19d45c3d843bc5a4c59efd3068, type: 2}
+  right: {fileID: 11400000, guid: efbe4d77506444b44949df1e961f4bf8, type: 2}
+  up: {fileID: 11400000, guid: f938eb55f4a9360489ef3d4b1a3124cf, type: 2}
+  down: {fileID: 0}
+  interactedState: {fileID: 0}
+  machineComponents:
+  - {fileID: 11400000, guid: 26419af8422db954eb2a92e1dfd80355, type: 2}
+  - {fileID: 11400000, guid: 37777a8997e49c14a995e9750314d9d6, type: 2}

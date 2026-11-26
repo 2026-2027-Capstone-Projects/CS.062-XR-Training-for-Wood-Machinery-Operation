@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84803622bf47d7e4c8b937aaa9c45230, type: 3}
+  m_Name: Right
+  m_EditorClassIdentifier: Assembly-CSharp::PhotoObject
+  Name: Right
+  photo: {fileID: 4792017133238211214, guid: 0f90551b58a984e4493b56433f770008, type: 3}
+  left: {fileID: 11400000, guid: ef344d1d7d707c44b93f095a018952cb, type: 2}
+  right: {fileID: 11400000, guid: 40aea7370384f804dad993a7f9c6472f, type: 2}
+  up: {fileID: 11400000, guid: f938eb55f4a9360489ef3d4b1a3124cf, type: 2}
+  down: {fileID: 0}
+  interactedState: {fileID: 0}
+  machineComponents: []

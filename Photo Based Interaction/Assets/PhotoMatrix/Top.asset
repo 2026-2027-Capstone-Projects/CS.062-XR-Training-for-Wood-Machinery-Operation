@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84803622bf47d7e4c8b937aaa9c45230, type: 3}
+  m_Name: Top
+  m_EditorClassIdentifier: Assembly-CSharp::PhotoObject
+  Name: Top
+  photo: {fileID: 2131463282016910941, guid: a7f74fe2394fa114caafe5f7b157938a, type: 3}
+  left: {fileID: 0}
+  right: {fileID: 0}
+  up: {fileID: 0}
+  down: {fileID: 11400000, guid: ef344d1d7d707c44b93f095a018952cb, type: 2}
+  interactedState: {fileID: 0}
+  machineComponents:
+  - {fileID: 11400000, guid: 924bd6c2bcb3a604e9768e528ebb99f2, type: 2}
+  - {fileID: 11400000, guid: f25e3a6b8a7f73444b127a665930e47a, type: 2}
